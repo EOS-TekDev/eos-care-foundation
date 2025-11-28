@@ -1,0 +1,135 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  email     String   @unique
+  password  String?
+  name      String
+  photo     String?
+  googleId  String?  @unique
+  role      Role     @default(USER)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  berita    Berita[]
+
+  @@map("users")
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+model Berita {
+  id                 Int      @id @default(autoincrement())
+  title              String
+  content            String   @db.Text
+  image              String?
+  isPublished        Boolean  @default(false)
+  showDonationButton Boolean  @default(false)
+  donasiId           Int?
+  donasi             Donasi?  @relation(fields: [donasiId], references: [id], onDelete: SetNull)
+  authorId           Int
+  author             User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  @@map("berita")
+}
+
+model About {
+  id        Int      @id @default(autoincrement())
+  title     String
+  content   String   @db.Text
+  image     String?
+  order     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("about")
+}
+
+model Kegiatan {
+  id                 Int              @id @default(autoincrement())
+  title              String
+  description        String           @db.Text
+  image              String?
+  category           KegiatanCategory
+  date               DateTime?
+  isActive           Boolean          @default(true)
+  showDonationButton Boolean          @default(false)
+  donasiId           Int?
+  donasi             Donasi?          @relation(fields: [donasiId], references: [id], onDelete: SetNull)
+  createdAt          DateTime         @default(now())
+  updatedAt          DateTime         @updatedAt
+
+  @@map("kegiatan")
+}
+
+enum KegiatanCategory {
+  SOSIAL
+  PENDIDIKAN
+  PELATIHAN
+}
+
+model Donasi {
+  id            Int       @id @default(autoincrement())
+  title         String
+  description   String    @db.Text
+  image         String?
+  targetAmount  Decimal   @db.Decimal(15, 2)
+  currentAmount Decimal   @default(0) @db.Decimal(15, 2)
+  deadline      DateTime?
+  isActive      Boolean   @default(true)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  berita       Berita[]
+  kegiatan     Kegiatan[]
+  transactions DonasiTransaction[]
+
+  @@map("donasi")
+}
+
+model DonasiTransaction {
+  id          Int            @id @default(autoincrement())
+  donasiId    Int
+  donasi      Donasi         @relation(fields: [donasiId], references: [id], onDelete: Cascade)
+  donorName   String
+  donorEmail  String?
+  amount      Decimal        @db.Decimal(15, 2)
+  message     String?        @db.Text
+  status      DonationStatus @default(PENDING)
+  orderId     String?        @unique
+  snapToken   String?        @db.Text
+  paymentType String?
+  createdAt   DateTime       @default(now())
+
+  @@map("donasi_transactions")
+}
+
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+}
+
+model TeamMember {
+  id        Int      @id @default(autoincrement())
+  name      String
+  role      String
+  photo     String?
+  order     Int      @default(0)
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("team_members")
+}
