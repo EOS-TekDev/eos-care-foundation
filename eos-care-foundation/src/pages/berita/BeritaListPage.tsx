@@ -83,7 +83,7 @@ function LoadingSkeleton() {
 const PAGE_SIZE = 9;
 
 export function BeritaListPage() {
-  const { data, isLoading } = usePublicBerita({ limit: 12 });
+  const { data, isLoading } = usePublicBerita({ limit: 100 });
   const { setRef: headerRef, isVisible: headerVisible } = useScrollReveal();
   const [visibleCount, setVisibleCount] = useState(PAGE_SIZE);
 

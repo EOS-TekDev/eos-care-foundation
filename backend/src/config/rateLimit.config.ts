@@ -20,11 +20,11 @@ const baseConfig: Partial<Options> = {
   legacyHeaders: false, // Disable `X-RateLimit-*` headers
 };
 
-// Default window in milliseconds (15 minutes)
-const DEFAULT_WINDOW_MS = 15 * 60 * 1000; // 900000ms
+// Default window in milliseconds (30 seconds)
+const DEFAULT_WINDOW_MS = 30 * 1000;
 
-// Retry after value in seconds (15 minutes)
-const RETRY_AFTER_SECONDS = 900;
+// Retry after value in seconds (30 seconds)
+const RETRY_AFTER_SECONDS = 30;
 
 /**
  * Rate limit configuration object containing settings for different endpoint types
@@ -32,13 +32,13 @@ const RETRY_AFTER_SECONDS = 900;
 export const rateLimitConfig = {
   /**
    * General public API rate limit
-   * - 100 requests per 15 minutes
+   * - 900 requests per 30 seconds
    * - Whitelist support for trusted IPs
    */
   public: {
     ...baseConfig,
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || String(DEFAULT_WINDOW_MS)),
-    limit: parseInt(process.env.RATE_LIMIT_PUBLIC_MAX || '100'),
+    limit: parseInt(process.env.RATE_LIMIT_PUBLIC_MAX || '900'),
     message: {
       success: false,
       error: {
@@ -51,13 +51,13 @@ export const rateLimitConfig = {
 
   /**
    * Strict authentication rate limit (login/register)
-   * - 5 requests per 15 minutes
+   * - 900 requests per 30 seconds
    * - No whitelist bypass for security
    */
   auth: {
     ...baseConfig,
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || String(DEFAULT_WINDOW_MS)),
-    limit: parseInt(process.env.RATE_LIMIT_AUTH_MAX || '5'),
+    limit: parseInt(process.env.RATE_LIMIT_AUTH_MAX || '900'),
     message: {
       success: false,
       error: {
@@ -70,13 +70,13 @@ export const rateLimitConfig = {
 
   /**
    * Admin API rate limit (higher threshold)
-   * - 200 requests per 15 minutes
+   * - 900 requests per 30 seconds
    * - No whitelist bypass - always enforce for admin
    */
   admin: {
     ...baseConfig,
     windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS || String(DEFAULT_WINDOW_MS)),
-    limit: parseInt(process.env.RATE_LIMIT_ADMIN_MAX || '200'),
+    limit: parseInt(process.env.RATE_LIMIT_ADMIN_MAX || '900'),
     message: {
       success: false,
       error: {

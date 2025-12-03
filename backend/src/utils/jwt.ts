@@ -1,12 +1,9 @@
 import jwt from 'jsonwebtoken';
 import { JwtPayload } from '../types';
+import { env } from '../config/env';
 
-const JWT_SECRET = process.env.JWT_SECRET;
+const JWT_SECRET = env.jwtSecret;
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
-
-if (!JWT_SECRET) {
-  throw new Error('JWT_SECRET environment variable must be set');
-}
 
 export const generateToken = (payload: JwtPayload): string => {
   return jwt.sign(payload, JWT_SECRET, {

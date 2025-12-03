@@ -62,6 +62,13 @@ export const handleMidtransNotification = async (
 
     const previousStatus = transaction.status;
 
+    // Idempotency: if status is unchanged, acknowledge without further writes
+    if (previousStatus === newStatus) {
+      console.info('Midtrans webhook replay ignored (status unchanged)', { orderId: order_id, status: newStatus });
+      sendResponse(res, 200, 'Notification processed (noop)');
+      return;
+    }
+
     // Update transaction
     await prisma.donasiTransaction.update({
       where: { orderId: order_id },
@@ -91,6 +98,7 @@ export const handleMidtransNotification = async (
       });
     }
 
+    console.info('Midtrans webhook processed', { orderId: order_id, from: previousStatus, to: newStatus });
     sendResponse(res, 200, 'Notification processed');
   } catch (error) {
     console.error('Midtrans webhook error:', error);

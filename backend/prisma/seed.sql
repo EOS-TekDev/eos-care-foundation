@@ -9,7 +9,7 @@ VALUES (
   '$2b$10$8Kx5mGH5q.z5k5q5q5q5qO5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q5q',
   'Administrator',
   'ADMIN',
-  NOW(),
+  NOW(),  
   NOW()
 ) ON DUPLICATE KEY UPDATE `name` = VALUES(`name`);
 

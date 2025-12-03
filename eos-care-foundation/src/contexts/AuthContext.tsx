@@ -1,5 +1,5 @@
 import { createContext, useCallback, useEffect, useState, type ReactNode } from 'react';
-import api from '../lib/api';
+import api, { onUnauthorized } from '../lib/api';
 import type { User, LoginForm, RegisterForm, ApiResponse } from '../lib/types';
 
 type UpdateProfilePayload = {
@@ -46,6 +46,10 @@ export function AuthProvider({ children }: AuthProviderProps) {
       setIsLoading(false);
     };
     initAuth();
+    const handleUnauthorized = () => {
+      setUser(null);
+    };
+    onUnauthorized(handleUnauthorized);
   }, [refreshUser]);
 
   const login = async (data: LoginForm) => {

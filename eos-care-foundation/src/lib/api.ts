@@ -5,12 +5,22 @@ export const api = axios.create({
   withCredentials: true,
 });
 
+let unauthorizedHandler: (() => void) | null = null;
+
+export const onUnauthorized = (handler: () => void) => {
+  unauthorizedHandler = handler;
+};
+
 // Response interceptor for error handling
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError<{ message?: string }>) => {
     let message = error.response?.data?.message || error.message;
     
+    if (error.response?.status === 401 && unauthorizedHandler) {
+      unauthorizedHandler();
+    }
+
     // Parse Zod validation errors (JSON array string)
     if (message.startsWith('[')) {
       try {

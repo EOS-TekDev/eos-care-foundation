@@ -4,6 +4,14 @@ import { z } from 'zod';
 export const titleField = z.string().min(3, 'Title must be at least 3 characters');
 export const contentField = z.string().min(10, 'Content must be at least 10 characters');
 
+// Coerce common boolean representations but keep undefined/null untouched
+const coerceBoolean = (val: unknown) => {
+  if (val === undefined || val === null || val === '') return undefined;
+  if (val === true || val === 'true' || val === 1 || val === '1') return true;
+  if (val === false || val === 'false' || val === 0 || val === '0') return false;
+  return val;
+};
+
 // Number/order helpers
 export const orderField = z.coerce.number().int();
 export const orderFieldWithDefault = orderField.optional().default(0);
@@ -11,7 +19,7 @@ export const orderFieldWithDefault = orderField.optional().default(0);
 // Boolean helpers (string "true"/true accepted)
 export const booleanField = () =>
   z.preprocess(
-    (val) => val === 'true' || val === true,
+    coerceBoolean,
     z.boolean()
   );
 export const booleanFieldWithDefault = (defaultValue = false) =>
