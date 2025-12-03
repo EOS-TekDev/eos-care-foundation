@@ -1,0 +1,84 @@
+import { z } from 'zod';
+export declare const createHomeHeroSchema: z.ZodObject<{
+    badge: z.ZodString;
+    headline: z.ZodString;
+    subheadline: z.ZodString;
+    ctaPrimary: z.ZodString;
+    ctaSecondary: z.ZodString;
+    cardTitle: z.ZodString;
+    cardDesc: z.ZodString;
+    cardBadge: z.ZodString;
+    volunteerCount: z.ZodString;
+    todayAmount: z.ZodString;
+    isActive: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$strip>;
+export declare const updateHomeHeroSchema: z.ZodObject<{
+    badge: z.ZodOptional<z.ZodString>;
+    headline: z.ZodOptional<z.ZodString>;
+    subheadline: z.ZodOptional<z.ZodString>;
+    ctaPrimary: z.ZodOptional<z.ZodString>;
+    ctaSecondary: z.ZodOptional<z.ZodString>;
+    cardTitle: z.ZodOptional<z.ZodString>;
+    cardDesc: z.ZodOptional<z.ZodString>;
+    cardBadge: z.ZodOptional<z.ZodString>;
+    volunteerCount: z.ZodOptional<z.ZodString>;
+    todayAmount: z.ZodOptional<z.ZodString>;
+    isActive: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
+}, z.core.$strip>;
+export type CreateHomeHeroInput = z.infer<typeof createHomeHeroSchema>;
+export type UpdateHomeHeroInput = z.infer<typeof updateHomeHeroSchema>;
+export declare const createHomeServiceSchema: z.ZodObject<{
+    title: z.ZodString;
+    description: z.ZodString;
+    icon: z.ZodString;
+    color: z.ZodString;
+    stats: z.ZodOptional<z.ZodString>;
+    statsLabel: z.ZodOptional<z.ZodString>;
+    isFeatured: z.ZodOptional<z.ZodBoolean>;
+    order: z.ZodOptional<z.ZodNumber>;
+    isActive: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$strip>;
+export declare const updateHomeServiceSchema: z.ZodObject<{
+    title: z.ZodOptional<z.ZodString>;
+    description: z.ZodOptional<z.ZodString>;
+    icon: z.ZodOptional<z.ZodString>;
+    color: z.ZodOptional<z.ZodString>;
+    stats: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    statsLabel: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    isFeatured: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
+    order: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    isActive: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
+}, z.core.$strip>;
+export type CreateHomeServiceInput = z.infer<typeof createHomeServiceSchema>;
+export type UpdateHomeServiceInput = z.infer<typeof updateHomeServiceSchema>;
+export declare const createHomeCtaSchema: z.ZodObject<{
+    trustBadges: z.ZodString;
+    headline: z.ZodString;
+    subheadline: z.ZodString;
+    description: z.ZodString;
+    minDonation: z.ZodString;
+    ctaPrimary: z.ZodString;
+    ctaSecondary: z.ZodString;
+    cardTitle: z.ZodString;
+    cardProgress: z.ZodOptional<z.ZodNumber>;
+    testimonial: z.ZodOptional<z.ZodString>;
+    testimonialAuthor: z.ZodOptional<z.ZodString>;
+    isActive: z.ZodOptional<z.ZodBoolean>;
+}, z.core.$strip>;
+export declare const updateHomeCtaSchema: z.ZodObject<{
+    trustBadges: z.ZodOptional<z.ZodString>;
+    headline: z.ZodOptional<z.ZodString>;
+    subheadline: z.ZodOptional<z.ZodString>;
+    description: z.ZodOptional<z.ZodString>;
+    minDonation: z.ZodOptional<z.ZodString>;
+    ctaPrimary: z.ZodOptional<z.ZodString>;
+    ctaSecondary: z.ZodOptional<z.ZodString>;
+    cardTitle: z.ZodOptional<z.ZodString>;
+    cardProgress: z.ZodOptional<z.ZodOptional<z.ZodNumber>>;
+    testimonial: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    testimonialAuthor: z.ZodOptional<z.ZodOptional<z.ZodString>>;
+    isActive: z.ZodOptional<z.ZodOptional<z.ZodBoolean>>;
+}, z.core.$strip>;
+export type CreateHomeCtaInput = z.infer<typeof createHomeCtaSchema>;
+export type UpdateHomeCtaInput = z.infer<typeof updateHomeCtaSchema>;
+//# sourceMappingURL=home.validator.d.ts.map

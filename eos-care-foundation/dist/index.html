@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EOS Care Foundation</title>
+    <meta name="description" content="Yayasan sosial terpercaya - Bersama membangun harapan" />
+    <!-- Google Fonts: DM Sans + Fraunces -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Fraunces:ital,opsz,wght@0,9..144,100..900;1,9..144,100..900&display=swap" rel="stylesheet">
+    <script>
+      (() => {
+        try {
+          const storageKey = 'eos-theme';
+          const stored = window.localStorage.getItem(storageKey);
+          const prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+          const theme = stored === 'light' || stored === 'dark' ? stored : 'system';
+          const resolved = theme === 'system' ? (prefersDark ? 'dark' : 'light') : theme;
+          if (resolved === 'dark') {
+            document.documentElement.classList.add('dark');
+          } else {
+            document.documentElement.classList.remove('dark');
+          }
+        } catch (error) {
+          console.warn('Theme initialization failed', error);
+        }
+      })();
+    </script>
+    <script type="module" crossorigin src="/assets/index-BAw7LjIQ.js"></script>
+    <link rel="stylesheet" crossorigin href="/assets/index-DKAqtjgy.css">
+  </head>
+  <body>
+    <div id="root"></div>
+    <!-- Midtrans Snap.js (Sandbox) - Change to production URL for live -->
+    <script 
+      src="https://app.sandbox.midtrans.com/snap/snap.js" 
+      data-client-key="Mid-client-BfC6vUPaOSdu9tFo"
+    ></script>
+  </body>
+</html>

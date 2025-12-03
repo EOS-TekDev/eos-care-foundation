@@ -1,0 +1,2 @@
+export declare const getAll: (req: import("express").Request, res: import("express").Response) => Promise<void>, getById: (req: import("express").Request, res: import("express").Response) => Promise<void>, create: (req: import("express").Request, res: import("express").Response) => Promise<void>, update: (req: import("express").Request, res: import("express").Response) => Promise<void>, remove: (req: import("express").Request, res: import("express").Response) => Promise<void>;
+//# sourceMappingURL=about.controller.d.ts.map
