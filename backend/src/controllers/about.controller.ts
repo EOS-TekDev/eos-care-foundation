@@ -10,6 +10,7 @@ const crud = createCrudHandlers({
   createSchema: createAboutSchema,
   updateSchema: updateAboutSchema,
   defaultOrderBy: { order: 'asc' },
+  supportsImage: true,
 });
 
 export const { getAll, getById, create, update, remove } = crud;

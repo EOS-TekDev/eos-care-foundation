@@ -14,6 +14,7 @@ interface CrudConfig<TCreate, TUpdate> {
   updateSchema: ZodSchema<TUpdate>;
   defaultOrderBy?: Record<string, 'asc' | 'desc'>;
   include?: Record<string, unknown>;
+  supportsImage?: boolean;
   // Hooks for customization
   beforeCreate?: (data: TCreate, req: Request) => Record<string, unknown>;
   beforeUpdate?: (data: TUpdate, req: Request) => Record<string, unknown>;
@@ -39,6 +40,7 @@ export function createCrudHandlers<TCreate, TUpdate>(
     updateSchema,
     defaultOrderBy = { createdAt: 'desc' },
     include,
+    supportsImage = false,
     beforeCreate,
     beforeUpdate,
   } = config;
@@ -87,12 +89,14 @@ export function createCrudHandlers<TCreate, TUpdate>(
   const create: Handler = async (req, res) => {
     try {
       const input = createSchema.parse(req.body);
-      const image = req.file ? `/uploads/${req.file.filename}` : null;
-      
       const extraData = beforeCreate ? beforeCreate(input, req) : {};
 
       const data = await db.create({
-        data: { ...input, image, ...extraData },
+        data: { 
+          ...input, 
+          ...(supportsImage && { image: req.file ? `/uploads/${req.file.filename}` : null }),
+          ...extraData 
+        },
         ...(include && { include }),
       });
 
@@ -110,7 +114,6 @@ export function createCrudHandlers<TCreate, TUpdate>(
     try {
       const id = parseInt(req.params.id, 10);
       const input = updateSchema.parse(req.body);
-      const image = req.file ? `/uploads/${req.file.filename}` : undefined;
 
       const existing = await db.findUnique({ where: { id } });
       if (!existing) {
@@ -122,7 +125,11 @@ export function createCrudHandlers<TCreate, TUpdate>(
 
       const data = await db.update({
         where: { id },
-        data: { ...input, ...(image && { image }), ...extraData },
+        data: { 
+          ...input, 
+          ...(supportsImage && req.file && { image: `/uploads/${req.file.filename}` }),
+          ...extraData 
+        },
         ...(include && { include }),
       });
 

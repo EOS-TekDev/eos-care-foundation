@@ -1,0 +1,174 @@
+CREATE TABLE IF NOT EXISTS `users` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `email` VARCHAR(191) NOT NULL,
+  `password` VARCHAR(191) NULL,
+  `name` VARCHAR(191) NOT NULL,
+  `photo` VARCHAR(191) NULL,
+  `googleId` VARCHAR(191) NULL,
+  `role` ENUM('ADMIN','USER') NOT NULL DEFAULT 'USER',
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `users_email_key` (`email`),
+  UNIQUE KEY `users_googleId_key` (`googleId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `donasi` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL,
+  `description` TEXT NOT NULL,
+  `image` VARCHAR(191) NULL,
+  `targetAmount` DECIMAL(15, 2) NOT NULL,
+  `currentAmount` DECIMAL(15, 2) NOT NULL DEFAULT 0.00,
+  `deadline` DATETIME(3) NULL,
+  `isActive` BOOLEAN NOT NULL DEFAULT 1,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `berita` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` TEXT NOT NULL,
+  `content` TEXT NOT NULL,
+  `image` VARCHAR(191) NULL,
+  `isPublished` BOOLEAN NOT NULL DEFAULT 0,
+  `showDonationButton` BOOLEAN NOT NULL DEFAULT 0,
+  `donasiId` INT NULL,
+  `authorId` INT NOT NULL,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  KEY `berita_authorId_fkey` (`authorId`),
+  KEY `berita_donasiId_fkey` (`donasiId`),
+  CONSTRAINT `berita_authorId_fk` FOREIGN KEY (`authorId`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `berita_donasiId_fk` FOREIGN KEY (`donasiId`) REFERENCES `donasi` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `berita_comments` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `beritaId` INT NOT NULL,
+  `userId` INT NOT NULL,
+  `parentId` INT NULL,
+  `content` TEXT NOT NULL,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  KEY `berita_comments_beritaId_fkey` (`beritaId`),
+  KEY `berita_comments_userId_fkey` (`userId`),
+  KEY `berita_comments_parentId_idx` (`parentId`),
+  CONSTRAINT `berita_comments_beritaId_fk` FOREIGN KEY (`beritaId`) REFERENCES `berita` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `berita_comments_userId_fk` FOREIGN KEY (`userId`) REFERENCES `users` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE,
+  CONSTRAINT `berita_comments_parentId_fk` FOREIGN KEY (`parentId`) REFERENCES `berita_comments` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `kegiatan` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL,
+  `description` TEXT NOT NULL,
+  `image` VARCHAR(191) NULL,
+  `category` ENUM('SOSIAL','PENDIDIKAN','PELATIHAN') NOT NULL,
+  `date` DATETIME(3) NULL,
+  `isActive` BOOLEAN NOT NULL DEFAULT 1,
+  `showDonationButton` BOOLEAN NOT NULL DEFAULT 0,
+  `donasiId` INT NULL,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  KEY `kegiatan_donasiId_fkey` (`donasiId`),
+  CONSTRAINT `kegiatan_donasiId_fk` FOREIGN KEY (`donasiId`) REFERENCES `donasi` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `donasi_transactions` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `donasiId` INT NOT NULL,
+  `donorName` VARCHAR(191) NOT NULL,
+  `donorEmail` VARCHAR(191) NULL,
+  `amount` DECIMAL(15, 2) NOT NULL,
+  `message` TEXT NULL,
+  `status` ENUM('PENDING','COMPLETED','FAILED') NOT NULL DEFAULT 'PENDING',
+  `orderId` VARCHAR(191) NULL,
+  `snapToken` TEXT NULL,
+  `paymentType` VARCHAR(191) NULL,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `donasi_transactions_orderId_key` (`orderId`),
+  KEY `donasi_transactions_donasiId_fkey` (`donasiId`),
+  CONSTRAINT `donasi_transactions_donasiId_fk` FOREIGN KEY (`donasiId`) REFERENCES `donasi` (`id`) ON DELETE RESTRICT ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `about` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL,
+  `content` TEXT NOT NULL,
+  `image` VARCHAR(191) NULL,
+  `order` INT NOT NULL DEFAULT 0,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `team_members` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `name` VARCHAR(191) NOT NULL,
+  `role` VARCHAR(191) NOT NULL,
+  `photo` VARCHAR(191) NULL,
+  `order` INT NOT NULL DEFAULT 0,
+  `isActive` BOOLEAN NOT NULL DEFAULT 1,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `home_hero` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `badge` VARCHAR(191) NOT NULL,
+  `headline` TEXT NOT NULL,
+  `subheadline` TEXT NOT NULL,
+  `ctaPrimary` VARCHAR(191) NOT NULL,
+  `ctaSecondary` VARCHAR(191) NOT NULL,
+  `cardTitle` VARCHAR(191) NOT NULL,
+  `cardDesc` TEXT NOT NULL,
+  `cardBadge` VARCHAR(191) NOT NULL,
+  `volunteerCount` VARCHAR(191) NOT NULL,
+  `todayAmount` VARCHAR(191) NOT NULL,
+  `isActive` BOOLEAN NOT NULL DEFAULT 1,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `home_services` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `title` VARCHAR(255) NOT NULL,
+  `description` TEXT NOT NULL,
+  `icon` VARCHAR(191) NOT NULL,
+  `color` VARCHAR(191) NOT NULL,
+  `stats` VARCHAR(191) NULL,
+  `statsLabel` VARCHAR(191) NULL,
+  `isFeatured` BOOLEAN NOT NULL DEFAULT 0,
+  `order` INT NOT NULL DEFAULT 0,
+  `isActive` BOOLEAN NOT NULL DEFAULT 1,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS `home_cta` (
+  `id` INT NOT NULL AUTO_INCREMENT,
+  `trustBadges` TEXT NOT NULL,
+  `headline` VARCHAR(191) NOT NULL,
+  `subheadline` VARCHAR(191) NOT NULL,
+  `description` TEXT NOT NULL,
+  `minDonation` VARCHAR(191) NOT NULL,
+  `ctaPrimary` VARCHAR(191) NOT NULL,
+  `ctaSecondary` VARCHAR(191) NOT NULL,
+  `cardTitle` VARCHAR(191) NOT NULL,
+  `cardProgress` INT NOT NULL DEFAULT 85,
+  `testimonial` TEXT NULL,
+  `testimonialAuthor` VARCHAR(191) NULL,
+  `isActive` BOOLEAN NOT NULL DEFAULT 1,
+  `createdAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3),
+  `updatedAt` DATETIME(3) NOT NULL DEFAULT CURRENT_TIMESTAMP(3) ON UPDATE CURRENT_TIMESTAMP(3),
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;

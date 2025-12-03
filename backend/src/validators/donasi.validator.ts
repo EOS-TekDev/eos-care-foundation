@@ -1,15 +1,21 @@
 import { z } from 'zod';
-import { titleField, dateField, booleanField, makeUpdateSchema } from './base.validator';
+import { titleField, dateField, booleanField, booleanFieldWithDefault } from './base.validator';
 
 export const createDonasiSchema = z.object({
   title: titleField,
   description: z.string().min(10, 'Description must be at least 10 characters'),
   targetAmount: z.coerce.number().positive('Target amount must be positive'),
   deadline: dateField,
-  isActive: booleanField(true),
+  isActive: booleanFieldWithDefault(true),
 });
 
-export const updateDonasiSchema = makeUpdateSchema(createDonasiSchema);
+export const updateDonasiSchema = z.object({
+  title: titleField.optional(),
+  description: z.string().min(10, 'Description must be at least 10 characters').optional(),
+  targetAmount: z.coerce.number().positive('Target amount must be positive').optional(),
+  deadline: dateField,
+  isActive: booleanField().optional(),
+});
 
 export const createTransactionSchema = z.object({
   donorName: z.string().min(2, 'Donor name must be at least 2 characters'),

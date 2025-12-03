@@ -1,13 +1,17 @@
 import { z } from 'zod';
-import { titleField, contentField, orderField, makeUpdateSchema } from './base.validator';
+import { titleField, contentField, orderField, orderFieldWithDefault } from './base.validator';
 
 export const createAboutSchema = z.object({
   title: titleField,
   content: contentField,
-  order: orderField,
+  order: orderFieldWithDefault,
 });
 
-export const updateAboutSchema = makeUpdateSchema(createAboutSchema);
+export const updateAboutSchema = z.object({
+  title: titleField.optional(),
+  content: contentField.optional(),
+  order: orderField.optional(),
+});
 
 export type CreateAboutInput = z.infer<typeof createAboutSchema>;
 export type UpdateAboutInput = z.infer<typeof updateAboutSchema>;

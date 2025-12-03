@@ -1,0 +1,1 @@
+ALTER TABLE `berita` MODIFY `title` TEXT NOT NULL;

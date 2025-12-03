@@ -31,6 +31,7 @@ const crud = createCrudHandlers({
   createSchema: createKegiatanSchema,
   updateSchema: updateKegiatanSchema,
   include: kegiatanInclude,
+  supportsImage: true,
   beforeCreate: transformDate,
   beforeUpdate: transformDate,
 });

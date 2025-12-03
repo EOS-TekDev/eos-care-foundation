@@ -8,6 +8,7 @@ import * as kegiatanController from '../controllers/kegiatan.controller';
 import * as donasiController from '../controllers/donasi.controller';
 import * as dashboardController from '../controllers/dashboard.controller';
 import * as teamController from '../controllers/team.controller';
+import * as homeController from '../controllers/home.controller';
 
 const router = Router();
 
@@ -16,6 +17,7 @@ router.use(authenticate, isAdmin);
 
 // Dashboard
 router.get('/dashboard', dashboardController.getStats);
+router.get('/activities', dashboardController.getRecentActivity);
 
 // Berita routes
 router.get('/berita', beritaController.getAll);
@@ -53,5 +55,26 @@ router.get('/team/:id', teamController.getById);
 router.post('/team', upload.single('photo'), teamController.create);
 router.put('/team/:id', upload.single('photo'), teamController.update);
 router.delete('/team/:id', teamController.remove);
+
+// Home Hero routes
+router.get('/home-hero', homeController.heroGetAll);
+router.get('/home-hero/:id', homeController.heroGetById);
+router.post('/home-hero', homeController.heroCreate);
+router.put('/home-hero/:id', homeController.heroUpdate);
+router.delete('/home-hero/:id', homeController.heroRemove);
+
+// Home Service routes
+router.get('/home-services', homeController.serviceGetAll);
+router.get('/home-services/:id', homeController.serviceGetById);
+router.post('/home-services', homeController.serviceCreate);
+router.put('/home-services/:id', homeController.serviceUpdate);
+router.delete('/home-services/:id', homeController.serviceRemove);
+
+// Home CTA routes
+router.get('/home-cta', homeController.ctaGetAll);
+router.get('/home-cta/:id', homeController.ctaGetById);
+router.post('/home-cta', homeController.ctaCreate);
+router.put('/home-cta/:id', homeController.ctaUpdate);
+router.delete('/home-cta/:id', homeController.ctaRemove);
 
 export default router;

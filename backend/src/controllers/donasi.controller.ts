@@ -29,6 +29,7 @@ const crud = createCrudHandlers({
   createSchema: createDonasiSchema,
   updateSchema: updateDonasiSchema,
   include: donasiInclude,
+  supportsImage: true,
   beforeCreate: transformDeadline,
   beforeUpdate: transformDeadline,
 });

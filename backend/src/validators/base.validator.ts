@@ -3,12 +3,20 @@ import { z } from 'zod';
 // Reusable field schemas
 export const titleField = z.string().min(3, 'Title must be at least 3 characters');
 export const contentField = z.string().min(10, 'Content must be at least 10 characters');
-export const orderField = z.coerce.number().int().optional().default(0);
-export const booleanField = (defaultValue = false) => 
+
+// Number/order helpers
+export const orderField = z.coerce.number().int();
+export const orderFieldWithDefault = orderField.optional().default(0);
+
+// Boolean helpers (string "true"/true accepted)
+export const booleanField = () =>
   z.preprocess(
     (val) => val === 'true' || val === true,
     z.boolean()
-  ).optional().default(defaultValue);
+  );
+export const booleanFieldWithDefault = (defaultValue = false) =>
+  booleanField().optional().default(defaultValue);
+
 export const dateField = z.preprocess(
   (val) => {
     if (!val || val === '') return undefined;
@@ -21,5 +29,5 @@ export const dateField = z.preprocess(
   z.string().datetime().optional()
 );
 
-// Helper to create update schema from create schema
+// Helper to create update schema from create schema (only use when create schema has no defaults)
 export const makeUpdateSchema = <T extends z.ZodRawShape>(schema: z.ZodObject<T>) => schema.partial();
